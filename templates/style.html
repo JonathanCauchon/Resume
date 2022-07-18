@@ -1,0 +1,676 @@
+
+<!DOCTYPE html>
+<html>
+<title>Jonathan Cauchon - Resume</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+
+<head>
+
+    <!-- Third party imports -->
+
+    <!-- w2schools styling -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- Google font -->
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+
+    <!-- Font-awesome for great icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <!-- chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <!-- Custom css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- contra-DC simulator server interaction -->
+    <script>
+
+        $(document).ready(function() {
+
+            var amplitudeChart;
+            var groupDelayChart;
+
+            var c = $('#amplitudeChart');
+            var ct = c.get(0).getContext('2d');
+            var container = $(c).parent();
+
+
+            c.attr('width', $(container).width()); //max width
+            c.attr('height', .7*$(container).width()); //set the height to the width to make a square
+
+
+            $("#amplitudeChart").attr('width', $(this).parent().width());
+            $("#amplitudeChart").attr('height', $(this).parent().width());
+
+
+            function addSubmit(ev) {
+              ev.preventDefault();
+              $.ajax({
+                method: 'POST',
+                url: {{ url_for('simulate')|tojson }},
+                data: $(this).serialize()
+              }).done(updatePlot);
+            }
+
+            function updatePlot(data) {
+
+                var centerSuccess;
+                var bandwidthSuccess;
+
+                $("#bandwidth").text(data.bw);
+                $("#bandwidth").css("font-weight", "bold");
+
+                if ((Math.abs(data.bw - 4)) > 0.1){
+                    $("#bandwidth").css("color", "red");
+                    bandwidthSuccess = false;
+                }
+                else{
+                    $("#bandwidth").css("color", "green");
+                    bandwidthSuccess = true;
+                }
+
+                $("#center").text(data.center);
+                $("#center").css("font-weight", "bold");
+
+                if ((Math.abs(data.center - 1560)) > 1){
+                    $("#center").css("color", "red");
+                    centerSuccess = false;
+                }
+                else{
+                    $("#center").css("color", "green");
+                    centerSuccess = true;
+                }
+
+                if (centerSuccess && bandwidthSuccess){
+                    $("#challengeStatus").text("success! Good job!")
+                    $("#challengeStatus").css("font-weight", "bold")
+                    $("#challengeStatus").css("color", "green")
+                }
+                else{
+                    $("#challengeStatus").text("Keep trying...")
+                    $("#challengeStatus").css("font-weight", "bold")
+                    $("#challengeStatus").css("color", "red")
+                }
+
+
+                if (amplitudeChart) {
+                amplitudeChart.destroy();
+                }
+
+                var ctx = document.getElementById('amplitudeChart').getContext('2d');
+                amplitudeChart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: "line",
+
+                // The data for our dataset
+                data: {
+                    labels: JSON.parse(data.wvl),
+                    datasets: [ {
+                            fill: false,
+                            label: "Drop",
+                            pointRadius: 0,
+                            // borderColor: "#555",
+                            borderColor: "blue",
+                            data: JSON.parse(data.drop)
+                        },
+                        {
+                            fill: false,
+                            label: "Thru",
+                            pointRadius: 0,
+                            borderColor: "red",
+                            data: JSON.parse(data.thru)
+                        }
+                    ]
+                },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            xAxes: [{
+                                scaleLabel: {
+                                display: true,
+                                labelString: "Wavelength (nm)",
+                                fontSize: 18
+                                },
+                                ticks: {
+                                    fontSize: 16,
+                                    maxTicksLimit: 5,
+                                    minRotation: 0,
+                                    maxRotation: 0
+                                }
+                            }],
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Response (dB)",
+                                    fontSize: 18
+
+                                },
+                                ticks:{
+                                    fontSize: 16,
+                                    min: -80
+                                }
+                            }]
+                        },
+
+                        title: {
+                            display: true,
+                            text: "Simulation Result",
+                            fontSize: 26
+                        }
+
+                    }
+                });
+            }
+
+            $('#simulation').on('submit', addSubmit);
+
+        });
+    </script>
+
+    <!-- Collaspible sections script -->
+    <script>
+        $(document).ready(function() {
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+
+            for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight)
+                {
+                content.style.maxHeight = "0px";
+                content.style.maxHeight = null;
+                content.style.borderStyle = "none";
+                content.style.paddingTop = "0px";
+
+                } else {
+                content.style.maxHeight = "5000px";
+                content.style.borderStyle = "none solid solid solid";
+                content.style.paddingTop = "10px";
+                }
+            });
+            }
+        });
+    </script>
+
+</head>
+
+
+<body class="w3-light-grey">
+
+    <!-- Page container -->
+<div class="w3-content w3-margin-top" style="max-width:100ch;">
+
+  <!-- he Grid  -->
+  <div class="w3-row-padding">
+
+    <!-- Left Column -->
+    <div class="w3-third">
+
+      <div class="w3-white w3-text-grey w3-card-4">
+        <div class="w3-display-container">
+            <div style="text-align: center; padding-top: 10%;">
+          <img src="static/figures/portrait_good_quality.png" style="width:80%">
+          <!-- <img href="{{ url_for('static', filename='figures/portrait_good_quality.png') }}" style="width:80%"> -->
+
+            </div>
+          <div class="w3-display-bottomleft w3-container w3-text-white w3-">
+          </div>
+        </div>
+
+        <div class="w3-container w3-padding; text-align: left;">
+          <h5><br>&nbsp;<i class="fa fa-briefcase fa-fw w3-margin-right w3-large w3-text-black"></i>Photonics Engineer</h5>
+          <p><i class="fa fa-github fa-fw w3-margin-right w3-xlarge w3-text-black"></i> <a href="https://www.github.com/JonathanCauchon">View Github</a> <br>
+          <i class="fa fa-linkedin fa-fw w3-margin-right w3-xlarge w3-text-black"></i> <a href="https://www.linkedin.com/in/jonathan-cauchon-06751b156/">View LinkedIn</a> <br>
+          <i class="fa fa-file fa-fw w3-margin-right w3-xlarge w3-text-black"></i> <a href="/static/figures/pdf_version.pdf" download>PDF Resume</a> </p>
+
+          <h3 class="margin-bottom: 0;">SKILLS</h3>
+          <hr class="dashGray">
+
+          <p class="w3-text-black"><i class="fa fa-user fa-fw w3-margin-right w3-large w3-text-black"></i>Personal</p>
+          <div class="w3-light-grey w3-round-xlarge w3-small">
+              <ul>
+                  <li>Initiative</li>
+                  <li>Resourcefulness</li>
+                  <li>Organization</li>
+                  <li>Written & Oral Communication</li>
+                  <li>Collaboration</li>
+                </ul>
+        </div>
+
+
+          <hr class="dashGray">
+          <p class="w3-text-black"><i class="fa fa-code fa-fw w3-margin-right w3-large w3-text-black"></i>Programming</p>
+          <div class="w3-light-grey w3-round-xlarge w3-small">
+            <p style="width:100%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;Python</p>
+            <p style="width:85%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;MATLAB & Simulink</p>
+            <p style="width:80%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;LaTeX</p>
+            <p style="width:40%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;JavaScript</p>
+            <p style="width:20%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;C#</p>
+        </div>
+
+            <hr class="dashGray">
+            <p class="w3-text-black"><i class="fa fa-desktop fa-fw w3-margin-right w3-large w3-text-black"></i>Software</p>
+            <div class="w3-light-grey w3-round-xlarge w3-small">
+                <ul>
+                    <li>Lumerical Mode, FDTD, Device, Interconnect</li>
+                    <li>Klayout</li>
+                    <li>GDS Photonics Toolbox (MATLAB)</li>
+                    <li>NI Visa</li>
+                    <li>ML Frameworks (Scikit-learn, PyTorch, Pandas)</li>
+                    <li>Github</li>
+                  </ul>
+          </div>
+
+          <hr class="dashGray">
+          <p class="w3-text-black"><i class="fa fa-language fa-fw w3-margin-right w3-large w3-text-black"></i>Languages</p>
+          <!-- <p>Python</p> -->
+          <div class="w3-light-grey w3-round-xlarge w3-small">
+                <p style="width:100%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;French</p>
+                <p style="width:95%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;English</p>
+                <p style="width:60%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;German</p>
+                <p style="width:35%; text-align: left; border-radius: 25px; background: dodgerblue; color: white;">&nbsp;&nbsp;&nbsp;Spanish</p>
+        </div>
+        </div>
+      </div>
+
+    <!-- End Left Column -->
+    </div>
+
+    <!-- Right Column -->
+    <div class="w3-twothird">
+
+    <!-- Header -->
+    <div class="w3-container w3-card w3-white" style=" color:#555; padding-top: 20px; padding-bottom: 10px; margin-bottom:20px;">
+
+        <h2 style="color:black; margin-bottom: 0;"><b>JONATHAN CAUCHON</b></h2>
+
+        <h6 style="color:grey; margin-top: 0;">M. Sc. electrical engineering - silicon photonics design </h6> <br>
+
+        <p class="small">
+            <i class="fa fa-calendar fa-fw w3-margin-right w3-large w3-text-black"></i>1995/10/18  <br>
+        <i class="fa fa-map-marker fa-fw w3-margin-right w3-large w3-text-black"></i>Quebec City, QC, Canada <br>
+        <i class="fa fa-envelope fa-fw w3-margin-right w3-large w3-text-black"></i>
+            <a href="mailto:jonathan.cauchon@outlook.com">jonathan.cauchon@outlook.com</a> <br>
+        <i class="fa fa-phone fa-fw w3-margin-right w3-xlarge w3-text-black"></i>418 932-3026
+        </p>
+
+        <p>
+            <div style="color: #555; text-align: justify">
+                Self-motivated candidate thriving in stimulating and fast-paced environements.
+                Main qualities involve sense of initiative and a hacker mentality.
+                Interests include device-level
+                design, simulation flow and laboratory automation, and data science.
+            </div>
+        </p>
+
+
+    </div>
+
+
+    <!-- education -->
+    <button class="collapsible"><h3 class="w3-text-white w3-twothird"><i class="fa fa-graduation-cap fa-fw w3-margin-right w3-xlarge w3-text-white"></i>EDUCATION</h3></button>
+    <div class="content">
+
+        <div class="w3-container">
+            <h5 style="color:#555">M. Sc. Electrical Engineering</h5>
+            <p class="alignleft UL" style="width: auto;">Université Laval</p><br><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 05/2019 - 04/2021</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Québec, Canada</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">B. Eng. Engineering Physics</h5>
+            <p class="alignleft UL" style="width: auto;">Université Laval</p><br><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 09/2015 - 04/2019</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Québec, Canada</p>
+        </div>
+
+    </div>
+
+
+    <button class="collapsible"><h3 class="w3-text-white w3-twothird"><i class="fa fa-suitcase fa-fw w3-margin-right w3-xlarge w3-text-white"></i>EXPERIENCE</h3></button>
+    <div class="content">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Photonics Engineer - Early Employee</h5>
+            <p class="alignleft EHVA" style="width: auto;">EHVA Photonics</p><br><div style="clear: both;"></div>
+            <ul style="color: #555;">
+                <p class="aligncenter" style="width: auto;">Engineering Services:</p><br><div style="clear: both;"></div>
+                <li>Conducted photonic test services requiring to understand clients' needs, implement customized test flows and supervise execution.</li>
+                <li>Implemented custom test flows on client premises by understanding their test requirements, developping missing software modules, implementing conventions, and developping test logic.</li>
+                <li>Implemented data solutions for clients, such as inventory management systems and business intellgence tools.</li>
+            </ul>
+            <p class="aligncenter" style="width: auto;">Software Development:</p><br><div style="clear: both;"></div>
+                <li>Conducted photonic test services requiring to understand clients' needs, implement customized test flows and
+                    supervise execution.</li>
+                </li>
+            </ul>
+            <p><i class="fa fa-link w3-large" style="color:#555"></i>&nbsp;<a href="https://www.ehva.ca/">https://www.ehva.ca/</a></p>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 04/2021 - Present</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Québec, Canada</p>
+
+        </div>
+        
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Teaching Assistant - Optoelectronics</h5>
+            <p class="alignleft UL" style="width: auto;" >Université Laval</p><br><div style="clear: both;"></div>
+            <p style="color:#555">Worked on hardware and software for remote operation of laboratory instruments by students due to COVID-19 pandemic.</p><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 09/2020 - 12/2020</p>
+
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Québec, Canada</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Research Assistant - Silicon Photonics</h5>
+            <p class="alignleft UL" style="width: auto;">Université Laval</p><br><div style="clear: both;"></div>
+            <p style="color:#555">Design and experimental characterization of passive integrated devices.</p><div style="clear: both;"></div>
+
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp;05/2018 - 04/2019</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Québec, Canada</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Research Intern - Quantum Optics</h5>
+            <p class="alignleft FAU" style="width: auto;">Friedrich-Alexander Universität</p><br><div style="clear: both;"></div>
+            <p style="color:#555">Experimental work in the study of quantum source properties (correlation functions).</p><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp;05/2017 - 08/2017</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Erlangen, Germany</p>
+        </div>
+
+    </div>
+
+
+    <button class="collapsible"><h3 class="w3-text-white w3-twothird"><i class="fa fa-crosshairs fa-fw w3-margin-right w3-xlarge w3-text-white"></i>PROJECTS</h3></button>
+    <div class="content">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Contra-DC - Master's Thesis Project</h5>
+            <p>Current Version: 7</p>
+            <p style="color: #555">
+                <ul style="color: #555;">
+                    <li>A fully-parameterizable contra-directional coupler filter model written in Python. Offers simulation using transfer matrix method, analysis of device performance.</li>
+                    <li>Featured on <a href="https://www.cmc.ca/passive-photonics-fabrication-course-nov2020/">SiEPIC Workshop</a> as simulation tool for designers.
+                    <li>Led to a <a href="https://www.osapublishing.org/ol/abstract.cfm?uri=ol-46-3-532">paper.</a></li>
+                  </ul>
+            </p>
+            <p><i class="fa fa-link w3-large" style="color:#555"></i>&nbsp;<a href="https://github.com/JonathanCauchon/Contra-DC"> https://github.com/JonathanCauchon/Contra-DC</a></p>
+            <p style="color:#555">Try it Yourself with the simulator widget below!</p>
+
+            <button class="collapsible"><h4 class="w3-text-white w3-twothird"><i class="fa fa-file-code-o fa-fw w3-margin-right w3-xlarge w3-text-white"></i>Contra-DC Simulator</h4></button>
+            <div class="content" style="text-align: center;">
+                <p style="color:#555; text-align: center;"> A Contra-directional coupler is 4-port integrated device allowing stop-band filtering. Change de design parameters to see how it affects the spectral response. </p>
+                <img src="static/figures/cdc_segment.png" style="text-align: center; width:100%"><br><br>
+
+                <hr style="margin-top: 2px;">
+
+                <form id="simulation">
+
+
+                    <div style="float: left; width:50%">
+                    {{ form.N.label }}: <label id="N_value"> {{ form.N.data }} </label>
+                    {{ form.N(min=100, max=1500, oninput="document.getElementById('N_value').innerHTML = this.value") }}
+
+                    <br>
+                    {{ form.period.label }}: <label id="period_value"> {{ form.period.data }} </label> nm
+                    {{ form.period(min=310, max=330, oninput="document.getElementById('period_value').innerHTML = this.value") }}
+
+                    <br>
+
+                    {{ form.kappa.label }}: <label id="kappa_value"> {{ form.kappa.data }} </label> /mm
+                    {{ form.kappa(min=5, max=70, oninput="document.getElementById('kappa_value').innerHTML = this.value") }}
+
+
+                    <br>
+
+                    </div>
+                    <div style="float: left; width:50%">
+
+                    {{ form.w1.label }}: <label id="w1_value"> {{ form.w1.data }} </label> nm
+                    {{ form.w1(min=550, max=570, oninput="document.getElementById('w1_value').innerHTML = this.value") }}
+
+                    <br>
+
+                    {{ form.w2.label }}: <label id="w2_value"> {{ form.w2.data }} </label> nm
+                    {{ form.w2(min=430, max=450, oninput="document.getElementById('w2_value').innerHTML = this.value") }}
+
+                    <br>
+                    {{ form.T.label }}: <label id="T_value"> {{ form.T.data }} </label> K
+                    {{ form.T(min=300, max=500, oninput="document.getElementById('T_value').innerHTML = this.value") }}
+
+                    </div>
+
+                    <div style="clear: both;"></div>
+
+                    <p style="text-align: center;"><input type=submit value=Simulate class="simulateButton" style="border: none; padding-right: 10px; padding-left: 10px; padding-top: 5px; padding-bottom: 5px;"> </p>
+
+                    <hr>
+
+                    <!-- <div style="float: left; width:50%; color: #555;">
+                        <p> Target center wavelength:  (1560 &#177; 1) nm</p>
+                    </div>
+                    <div style="float: left; width:50%; color: #555;">
+                        <p> Target 3-dB bandwidth:  (4.0 &#177; 0.1) nm</p>
+                    </div> -->
+
+                    <p style="color: #555;"><b>Challenge</b>: try to design a contra-DC filter providing a central wavelength of 1560 nm (&#177 1) and a bandwidth of 4 nm (&#177; 0.1). </p>
+
+                    <div style="float: left; width:50%; color: #555;">
+                        <p> Current center wavelength: <br> <span id="center"></span> nm</p>
+                    </div>
+                    <div style="float: left; width:50%; color: #555;">
+                        <p> Current 3-dB bandwidth:  <br> <span id="bandwidth"></span> nm</p>
+                    </div>
+
+                    <p id="challengeStatus" style="text-align: center;"> </p>
+
+
+                </form>
+
+                <hr>
+                <canvas id="amplitudeChart" style="width:90%;"></canvas>
+                <!-- <canvas id="groupDelayChart" style="width:90%;"></canvas> -->
+
+            </div>
+
+
+
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">BraggNet - Machine Learning Project</h5>
+            <p>Current Version: 2</p>
+            <p style="color: #555">
+                <ul style="color: #555;">
+                    <li>A PyTorch-based deep learning model trained to reconstruct complex coupled photonic systems from their spectral response. </li>
+                    <li>Finds use in contra-directional coupler inverse design and fabrication diagnosis. </li>
+                    <li>Submitted for publication</li>
+                  </ul>
+            </p>
+            <p><i class="fa fa-link w3-large" style="color:#555"></i>&nbsp;<a href="https://github.com/JonathanCauchon/BraggNet"> https://github.com/JonathanCauchon/BraggNet</a></p>
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+    <button onclick="collapsibleClick(this)" class="collapsible"><h3 class="w3-text-white w3-twothird"><i class="fa fa-pencil fa-fw w3-margin-right w3-xlarge w3-text-white"></i>PUBLICATIONS</h3></button>
+    <div class="content">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Thermally-chirped contra-directional couplers for residue-less, bandwidth-tunable Bragg filters with fabrication error compensation</h5>
+            <p style="color:#555">Jonathan Cauchon, Jonathan St-Yves, Wei Shi.</p><div style="clear: both;"></div>
+            <p class="alignleft OL" style="width: auto;" >Optics Letters </p><div style="clear: both;"></div>
+            <p>
+                <a href="https://www.osapublishing.org/ol/abstract.cfm?uri=ol-46-3-532">
+                    <i class="fa fa-link w3-large" style="color:#555"></i>
+                    https://www.osapublishing.org/ol/abstract.cfm?uri=ol-46-3-532 </a>
+                </p>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 01/2021</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Dual-Band Optical Filters Using Integrated Multimode Bragg Gratings</h5>
+            <p style="color:#555">Jonathan Cauchon, Wei Shi.</p><div style="clear: both;"></div>
+            <p class="alignleft OFC" style="width: auto;" ><b>OFC</b></p><div style="clear: both;"></div>
+            <p>
+                <a href="https://www.osapublishing.org/abstract.cfm?uri=OFC-2020-W2A.7">
+                    <i class="fa fa-link w3-large" style="color:#555"></i>
+                    https://www.osapublishing.org/abstract.cfm?uri=OFC-2020-W2A.7 </a>
+                </p>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 03/2020</p>
+        </div>
+
+
+    </div>
+
+
+
+    <button class="collapsible"><h3 class="w3-text-white w3-twothird"><i class="fa fa-users fa-fw w3-margin-right w3-xlarge w3-text-white"></i>EXTRACURRICULAR</h3></button>
+    <div class="content">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Head of Outreach Committee - REPOL</h5>
+            <h6 style="color:#555">Regroupement des étudiants en photonique et optique de Laval.</h6>
+            <p class="alignleft UL" style="width: auto;" >Université Laval</p><br><div style="clear: both;"></div>
+            <p style="color:#555">Plan and give lab tours to high school students, exhibit in job fairs to promote the field of photonics.</p><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 09/2019 - 08/2020</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Québec, Canada</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Aviation and Acquisition Team - GAUL</h5>
+            <h6 style="color:#555">Groupe aérospatial de l'Université Laval</h6>
+            <p class="alignleft UL" style="width: auto;">Université Laval</p><br><div style="clear: both;"></div>
+            <p style="color:#555">Work on rocket sensor hardware and software.</p><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp;09/2016 - 09/2017</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Québec, Canada</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Student Exchange - German Immersion</h5>
+            <p class="alignleft MBG" style="width: auto;">Martin-Behaim Gymnasium</p><br><div style="clear: both;"></div>
+            <p style="color:#555">Lived with a German family and went to a German high school.</p><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp;09/2011 - 12/2011</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Nürnberg, Germany</p>
+        </div>
+
+
+
+    </div>
+
+
+
+
+    <button class="collapsible"><h3 class="w3-text-white w3-twothird"><i class="fa fa-globe fa-fw w3-margin-right w3-xlarge w3-text-white"></i>PERSONAL INTERESTS</h3></button>
+    <div class="content">
+
+
+        <div class="w3-container">
+            <h5 style="color:#555">Traveling</h5>
+            <p style="color:#555">USA, Canada, France, Spain, Netherlands, Portugal, Czech Republic, Malta, Mexico, Cuba, Ecuador, Australia, and counting.</p>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp; 10/1995 - Future </p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Earth, Milky Way</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Programming</h5>
+            <p style="color:#555">Web development, algorithmic trading, web scraping.</p><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp;01/2018 - Present</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Anywhere</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Real Estate Investing</h5>
+            <p style="color:#555">Buy & hold rental properties</p><div style="clear: both;"></div>
+            <p class="alignleft" style="color:#555"><i class="fa fa-calendar w3-large" style="color:#555"></i> &nbsp;02/2017 - Present</p>
+            <p class="alignright" style="color:#555"><i class="fa fa-map-marker w3-large" style="color:#555"></i>&nbsp; Anywhere</p>
+        </div>
+
+        <hr style="margin-top: 0px;">
+
+        <div class="w3-container">
+            <h5 style="color:#555">Sport</h5>
+            <p style="color:#555">Soccer, Crossfit, Snowboard, Wakeboard.</p><div style="clear: both;"></div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- End Right Column -->
+</div>
+
+  <!-- End Grid -->
+  </div>
+
+  <!-- End Page Container -->
+</div>
+
+<footer class="w3-container w3-center" style="color: white; background-color: #555; padding-top: 10px; padding-bottom: 10px; height: auto;">
+  <p>Jonathan Cauchon (c) All rights reserved.</p>
+</footer>
+
+</body>
+</html>
+

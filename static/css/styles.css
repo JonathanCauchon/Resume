@@ -1,0 +1,323 @@
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Roboto", sans-serif;
+}
+
+
+.EHVA {
+    background: linear-gradient(180deg, #E1AD72, #469FD0);
+    color: white;
+    width: auto;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.UL{
+    background: linear-gradient(110deg, rgb(255, 15, 15),  rgb(255, 191, 15));
+    color:white; 
+    width: auto;
+    border-radius:10px; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.MBG{
+    background: darkblue;
+    color:white; 
+    width: auto;
+    border-radius:10px; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.FAU{
+    background: repeating-linear-gradient(#1d1752, #1d1752 4px, #555 4px, #555 8px);
+    color:white; 
+    width: auto;
+    border-radius:10px; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.OL{
+    background: repeating-linear-gradient(rgb(7, 87, 88), rgb(7, 87, 88) 7px, rgb(231, 198, 8) 5px, rgb(231, 198, 8) 25px);
+    color:rgb(7, 87, 88); 
+    width: auto;
+    border-radius:10px; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.OFC{
+    background: darkred;
+    color:white;
+    width: auto;
+    border-radius:10px; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.dropDownButton {
+  width: 100%;
+  /* height: 100% */
+  background-color: lightgrey;
+  color: black;
+  height: 70px;
+  border: none;
+  transition-duration: 0.4s;
+}
+
+.dropDownButton:hover {
+  background-color:white;
+}
+
+/* h-lines */
+
+hr.thickBlack {
+  /* width: 90%;  */
+  border: 1px solid black;
+  margin: auto;
+}
+
+hr.dashGray {
+  /* width: 100%;  */
+  border: 1px dashed gray;
+  margin: auto;
+}
+
+hr.tight {
+  margin: 0.01em auto;
+}
+
+.alignleft {
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+.aligncenter {
+  float: left;
+  width: 33.33333%;
+  text-align: center;
+}
+.alignright {
+  float: left;
+  width: 50%;
+  text-align: right;
+}
+
+/* Slider */
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4caf50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4caf50;
+  cursor: pointer;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 2px;
+  top: 2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(32px);
+  -ms-transform: translateX(32px);
+  transform: translateX(32px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.collapsible {
+  background-color: #555;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  margin-bottom: 10px;
+  width: 100%;
+  height: 60px;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  border-color: dodgerblue;
+}
+
+.simulateButton{
+  background-color: #555;
+  color: white;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  /*border-color: dodgerblue; */
+}
+.simulateButton:hover{
+  background-color: dodgerblue;
+  border-color: dodgerblue;
+}
+
+.active,
+.collapsible:hover {
+  background-color: #555;
+  background-color: dodgerblue;
+  border-color: dodgerblue;
+}
+
+.collapsible:after {
+  content: "\002B";
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0px;
+  overflow: hidden;
+  padding-top: 0px;
+  background-color: white;
+  /* transition: max-height 0.2s ease-out; */
+  /* background-color: #f1f1f1; */
+  /* border-style: none solid solid solid;  */
+  margin-bottom: 10px;
+  border-color:#555;
+}
+
+/* from jsfiddle example of sticky sidebar */
+.row {
+  background: #f8f9fa;
+  margin-top: 30px;
+  padding: 20px 0;
+}
+
+.col {
+  border: solid 1px #6c757d;
+}
+
+.nav-block {
+  height: 20px;
+  background: #555;
+  color: #fff;
+  line-height: 200px;
+}
+
+.fixed-sidebar {
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: -ms-sticky;
+  position: -o-sticky;
+  position: sticky;
+  height: 300px;
+  padding: 30px 0;
+  background: #555;
+  color: #fff;
+  top: 10px;
+  bottom: auto;
+}
+
+.blog-entry-content {
+  padding: 0 20px;
+}
+
+
