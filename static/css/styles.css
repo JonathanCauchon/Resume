@@ -9,6 +9,13 @@ h6 {
   font-family: "Roboto", sans-serif;
 }
 
+@media print and (color) {
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
 
 .EHVA {
     background: #357AAF;
@@ -240,7 +247,7 @@ input:checked + .slider:before {
   color: white;
   cursor: pointer;
   padding: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
   height: 60px;
   border: none;
@@ -248,19 +255,72 @@ input:checked + .slider:before {
   outline: none;
   font-size: 15px;
   border-color: dodgerblue;
+  border-radius: 10px;
 }
 
-.simulateButton{
-  background-color: #555;
-  color: white;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  /*border-color: dodgerblue; */
+.simulate-button{
+    position: relative;
+    background-color: #555;
+    height: 40px;
+    width: 25%;
+    margin-top: 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-size: large;
+    border: none;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    transition: all 0.2s;
 }
-.simulateButton:hover{
+
+.simulate-button:hover{
   background-color: dodgerblue;
   border-color: dodgerblue;
+}
+
+.simulate-button-loading{
+    pointer-events: none;
+    cursor: not-allowed;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background-color: white;
+    border-color: white;
+
+}
+
+.simulate-button-loading .simulate-button-text{
+    visibility: hidden;
+    opacity: 0;
+}
+
+.simulate-button-loading:after{
+    content: "";
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 5px solid transparent;
+    border-top-color: #555;
+    border-radius: 100%;
+    animation: simulate-button-loading-spinner 0.75s linear infinite;
+}
+
+@keyframes simulate-button-loading-spinner{
+    from {
+        transform: rotate(0turn);
+    }
+    to{
+        transform: rotate(1turn);
+    }
 }
 
 .active,
@@ -294,6 +354,8 @@ input:checked + .slider:before {
   /* border-style: none solid solid solid;  */
   margin-bottom: 10px;
   border-color:#555;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 /* from jsfiddle example of sticky sidebar */
@@ -314,22 +376,8 @@ input:checked + .slider:before {
   line-height: 200px;
 }
 
-.fixed-sidebar {
-  position: -webkit-sticky;
-  position: -moz-sticky;
-  position: -ms-sticky;
-  position: -o-sticky;
-  position: sticky;
-  height: 300px;
-  padding: 30px 0;
-  background: #555;
-  color: #fff;
-  top: 10px;
-  bottom: auto;
-}
-
-.blog-entry-content {
-  padding: 0 20px;
+.rounded-corners{
+    border-radius: 10px;
 }
 
 

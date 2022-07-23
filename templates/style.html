@@ -31,6 +31,8 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
+
+
     <!-- contra-DC simulator server interaction -->
     <script>
 
@@ -53,12 +55,15 @@
 
 
             function addSubmit(ev) {
-              ev.preventDefault();
-              $.ajax({
+            ev.preventDefault();
+            $("button.simulate-button").addClass("simulate-button-loading");
+            $.ajax({
                 method: 'POST',
                 url: {{ url_for('simulate')|tojson }},
                 data: $(this).serialize()
-              }).done(updatePlot);
+            })
+            .done(updatePlot)
+            .done(() => { $("button.simulate-button").removeClass("simulate-button-loading") }); 
             }
 
             function updatePlot(data) {
@@ -208,7 +213,7 @@
 </head>
 
 
-<body class="w3-light-grey">
+<body class="w3-light-grey"> 
 
     <!-- Page container -->
 <div class="w3-content w3-margin-top" style="max-width:120ch;">
@@ -219,14 +224,14 @@
     <!-- Left Column -->
     <div class="w3-third">
 
-      <div class="w3-white w3-text-grey w3-card-4">
+      <div class="w3-white w3-text-grey w3-card-4 rounded-corners" style="margin-bottom: 15px;">
         <div class="w3-display-container">
             <div style="text-align: center; padding-top: 10%;">
-          <img src="static/figures/portrait_good_quality.png" style="width:80%">
+          <img src="static/figures/portrait_good_quality.png" style="width: 80%; border-radius: 50%;">
           <!-- <img href="{{ url_for('static', filename='figures/portrait_good_quality.png') }}" style="width:80%"> -->
 
             </div>
-          <div class="w3-display-bottomleft w3-container w3-text-white w3-">
+          <div class="w3-display-bottomleft w3-container w3-text-white">
           </div>
         </div>
 
@@ -293,7 +298,7 @@
     <div class="w3-twothird">
 
     <!-- Header -->
-    <div class="w3-container w3-card w3-white" style=" color:#555; padding-top: 20px; padding-bottom: 10px; margin-bottom:20px;">
+    <div class="rounded-corners w3-container w3-card w3-white" style=" color:#555; padding-top: 20px; padding-bottom: 10px; margin-bottom:20px;">
 
         <h2 style="color:black; margin-bottom: 0;"><b>JONATHAN CAUCHON</b></h2>
 
@@ -473,7 +478,11 @@
 
                     <div style="clear: both;"></div>
 
-                    <p style="text-align: center;"><input type=submit value=Simulate class="simulateButton" style="border: none; padding-right: 10px; padding-left: 10px; padding-top: 5px; padding-bottom: 5px;"> </p>
+                    <p style="text-align: center;">
+                        <button type=submit class="simulate-button">
+                            <span class="simulate-button-text">Simulate</span>
+                        </button>
+                    </p>
 
                     <hr>
 

@@ -15,7 +15,10 @@ from pathlib import Path
 
 app = Flask(__name__)
 
-GITHUB_WEBHOOKS_KEY = os.environ["PYTHONANYWHERE_KEY"]
+try:
+    GITHUB_WEBHOOKS_KEY = os.environ["PYTHONANYWHERE_KEY"]
+except:
+    pass
 
 
 class cdcForm(Form):
