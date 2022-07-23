@@ -16,6 +16,7 @@ app = Flask(__name__)
 
 GITHUB_WEBHOOKS_KEY = os.environ["PYTHONANYWHERE_KEY"]
 
+
 class cdcForm(Form):
     """ A class for the cdc form on the cv website """
 
@@ -69,7 +70,6 @@ def index():
 @app.route("/simulate", methods=["POST"])
 def simulate():
 
-
     N = request.form.get("N", 0, type=int)
     period = request.form.get("period", 0, type=int)
     w1 = request.form.get("w1", 0, type=int)
@@ -77,10 +77,11 @@ def simulate():
     kappa = request.form.get("kappa", 0, type=int)
     T = request.form.get("T", 0, type=int)
 
-    wvl, drop, thru, gd, bw, center = computeCDC(N=N, period=period, w1=w1, w2=w2, kappa=kappa, T=T)
-
+    wvl, drop, thru, gd, bw, center = computeCDC(
+        N=N, period=period, w1=w1, w2=w2, kappa=kappa, T=T)
 
     return jsonify(wvl=wvl, drop=drop, thru=thru, gd=gd, bw=bw, center=center)
+
 
 @app.route('/update-server', methods=['POST'])
 def webhook():
@@ -138,6 +139,9 @@ def webhook():
         commit_hash = pull_info[0].commit.hexsha
         build_commit = f'build_commit = "{commit_hash}"'
         print(f'{build_commit}')
+
         return 'Updated PythonAnywhere server to commit {commit}'.format(commit=commit_hash)
 
 
+if __name__ == '__main__':
+    app.run(debug=True)
