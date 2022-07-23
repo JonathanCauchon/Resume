@@ -10,6 +10,7 @@ from flask import jsonify
 import git
 import hashlib
 import hmac
+from pathlib import Path
 
 
 app = Flask(__name__)
@@ -139,6 +140,8 @@ def webhook():
         commit_hash = pull_info[0].commit.hexsha
         build_commit = f'build_commit = "{commit_hash}"'
         print(f'{build_commit}')
+
+        Path("/var/www/jonathancauchon_pythonanywhere_com_wsgi.py").touch()
 
         return 'Updated PythonAnywhere server to commit {commit}'.format(commit=commit_hash)
 
