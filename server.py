@@ -123,10 +123,10 @@ def webhook():
                 payload=payload))
             abort(abort_code)
 
-        if payload['ref'] != 'refs/heads/master':
-            return json.dumps({'msg': 'Not master; ignoring'})
+        if payload['ref'] != 'refs/heads/Master':
+            return json.dumps({'msg': 'Not Master; ignoring'})
 
-        repo = git.Repo('https://github.com/JonathanCauchon/Resume')
+        repo = git.Repo('Resume')
         origin = repo.remotes.origin
 
         pull_info = origin.pull()
