@@ -9,6 +9,7 @@ import json
 from flask import jsonify
 import git
 import hashlib
+import hmac
 
 
 app = Flask(__name__)
@@ -140,3 +141,7 @@ def webhook():
         print(f'{build_commit}')
 
         return 'Updated PythonAnywhere server to commit {commit}'.format(commit=commit_hash)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
