@@ -108,7 +108,7 @@ def webhook():
         event = request.headers.get('X-GitHub-Event')
         if event == "ping":
             return json.dumps({'msg': 'Hi!'})
-        if event != "push":
+        if event != "pull_request":
             return json.dumps({'msg': "Wrong event type"})
 
         x_hub_signature = request.headers.get('X-Hub-Signature')
@@ -124,8 +124,8 @@ def webhook():
                 payload=payload))
             abort(abort_code)
 
-        if payload['ref'] != 'refs/heads/Master':
-            return json.dumps({'msg': 'Not Master; ignoring'})
+        if payload['action'] != 'closed':
+            return json.dumps({'msg': 'PR not closed, ignoring'})
 
         repo = git.Repo('.')
         origin = repo.remotes.origin
