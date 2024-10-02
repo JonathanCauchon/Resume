@@ -16,9 +16,19 @@ h6 {
     }
 }
 
+.ciena {
+    background: #d30000;
+    color: white;
+    width: auto;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
 
 .EHVA {
-    background: #357AAF;
+    background: #17244f;
     color: white;
     width: auto;
     border-radius: 10px;
